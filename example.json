@@ -1,0 +1,76 @@
+{
+    "variables": {
+        "iso_file": "",
+        "iso_checksum": "",
+        "type": "sha256",
+        "non_gui": "true"
+    },
+    "builders": [
+        {
+            "type": "hyperv-iso",
+            "iso_url": "",
+            "iso_checksum": "",
+            "iso_checksum_type": "",
+            "headless": "false",
+            "use_fixed_vhd_format": true,
+            "cpu": 2,
+            "ram_size": "12000",
+            "generation": 1,
+            "skip_compaction": true,
+            "differencing_disk": false,
+            "output_directory": "builds",
+            "vm_name": "CENTOS_7",
+            "floppy_files": ["ks.cfg"],
+            "boot_wait": "10s",
+            "http_directory": "http",
+            "boot_command": [
+                "<tab> text inst.ks=hd:df0:/ks.cfg <enter><wait>"
+            ],
+            "ssh_username": "root",
+            "ssh_password": "packer",
+            "ssh_port": 22,
+            "shutdown_command": "/sbin/halt -h -p",
+            "communication": "ssh",
+            "switch_name": "internal_vSwitch",
+            "ssh_timeout": "1h",
+            "ssh_host": "192.168.0.5"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "resources/chef.sh",
+            "destination": "/tmp/chef.sh"
+        },
+        {
+            "type": "file",
+            "source": "resources/chef_client.rpm",
+            "destination": "/tmp/chef_client.rpm"
+        },
+        {
+            "type": "file",
+            "source": "resources/chef",
+            "destination": "/tmp"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "rm -rf /etc/yum.repos.d/*",
+                "mkdir -p /etc/rhsm/ca"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "yum localinstall -y /tmp/chef_client.rpm",
+                "chef-client -z /tmp/chef/init.rb",
+                "chef-client -z /tmp/chef/subscription-manager.rb",
+                "chef-client -z /tmp/chef/register.rb",
+                "chef-client -z /tmp/chef/vas.rb",
+                "chef-client -z /tmp/chef/cli.rb",
+                "chef-client -z /tmp/chef/azure.rb",
+                "chef-client -z /tmp/chef/unregister.rb"
+            ]
+        }
+    ]
+}
