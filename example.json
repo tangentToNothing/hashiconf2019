@@ -39,12 +39,7 @@
     "provisioners": [
         {
             "type": "file",
-            "source": "resources/chef.sh",
-            "destination": "/tmp/chef.sh"
-        },
-        {
-            "type": "file",
-            "source": "resources/chef_client.rpm",
+            "source": "resources/chef-15.2.20-1.el7.x86_64.rpm",
             "destination": "/tmp/chef_client.rpm"
         },
         {
@@ -66,10 +61,8 @@
                 "chef-client -z /tmp/chef/init.rb",
                 "chef-client -z /tmp/chef/subscription-manager.rb",
                 "chef-client -z /tmp/chef/register.rb",
-                "chef-client -z /tmp/chef/vas.rb",
                 "chef-client -z /tmp/chef/cli.rb",
-                "chef-client -z /tmp/chef/azure.rb",
-                "chef-client -z /tmp/chef/unregister.rb"
+                "chef-client -z /tmp/chef/azure.rb"
             ]
         }
     ]
