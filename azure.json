@@ -1,0 +1,60 @@
+{
+    "variables": {
+        "iso_file": "http://repo1.ash.innoscale.net/centos/7.6.1810/isos/x86_64/CentOS-7-x86_64-Minimal-1810.iso",
+        "iso_checksum": "38d5d51d9d100fd73df031ffd6bd8b1297ce24660dc8c13a3b8b4534a4bd291c",
+        "type": "sha256",
+        "kickstart": "ks.cfg",
+        "non_gui": "true"
+    },
+    "builders": [
+        {
+            "type": "hyperv-iso",
+            "iso_url": "{{user `iso_file`}}",
+            "iso_checksum": "{{user `iso_checksum`}}",
+            "iso_checksum_type": "{{user `type`}}",
+            "headless": "{{user `non_gui`}}",
+            "use_fixed_vhd_format": true,
+            "cpus": 2,
+            "memory": "1024",
+            "disk_size": "10000",
+            "generation": 1,
+            "skip_compaction": true,
+            "differencing_disk": false,
+            "output_directory": "builds",
+            "vm_name": "CENTOS_7",
+            "boot_wait": "10s",
+            "floppy_files": ["{{user `kickstart`}}"],
+            "boot_command": [
+                "<tab> text inst.ks=hd:fd0:/{{user `kickstart`}} <enter><wait>"
+            ],
+            "ssh_username": "root",
+            "ssh_password": "Hashiconf2019",
+            "ssh_port": 22,
+            "shutdown_command": "/sbin/halt -h -p",
+            "communicator": "ssh",
+            "switch_name": "NestedSwitch",
+            "ssh_timeout": "1h",
+            "ssh_host": "10.0.2.3"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "resources/chef/chef-15.2.20-1.el7.x86_64.rpm",
+            "destination": "/tmp/chef_client.rpm"
+        },
+        {
+            "type": "file",
+            "source": "resources/chef",
+            "destination": "/tmp"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "yum localinstall -y /tmp/chef_client.rpm",
+                "chef-client -z /tmp/chef/init.rb --chef-license=accept",
+                "chef-client -z /tmp/chef/azure.rb --chef-license=accept"
+            ]
+        }
+    ]
+}
