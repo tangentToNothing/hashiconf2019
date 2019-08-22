@@ -1,0 +1,10 @@
+[
+    {
+      "Description": "centos7",
+      "Format": "vhd",
+      "UserBucket": {
+          "S3Bucket": "privatevdhs",
+          "S3Key": "CENTOS_7.vhd"
+      }
+  }
+]

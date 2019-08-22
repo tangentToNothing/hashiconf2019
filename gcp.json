@@ -3,7 +3,7 @@
         "iso_file": "http://repo1.ash.innoscale.net/centos/7.6.1810/isos/x86_64/CentOS-7-x86_64-Minimal-1810.iso",
         "iso_checksum": "38d5d51d9d100fd73df031ffd6bd8b1297ce24660dc8c13a3b8b4534a4bd291c",
         "type": "sha256",
-        "kickstart": "kickstart/centos7/azure/ks.cfg",
+        "kickstart": "kickstart/centos7/gcp/ks.cfg",
         "non_gui": "true"
     },
     "builders": [
@@ -20,8 +20,8 @@
             "generation": 1,
             "skip_compaction": true,
             "differencing_disk": false,
-            "output_directory": "builds/azure",
-            "vm_name": "CENTOS_7",
+            "output_directory": "builds/gcp",
+            "vm_name": "CENTOS_7_gcp",
             "boot_wait": "10s",
             "floppy_files": ["{{user `kickstart`}}"],
             "boot_command": [
@@ -34,7 +34,7 @@
             "communicator": "ssh",
             "switch_name": "NestedSwitch",
             "ssh_timeout": "1h",
-            "ssh_host": "10.0.2.3"
+            "ssh_host": "10.0.2.5"
         }
     ],
     "provisioners": [
@@ -45,15 +45,14 @@
         },
         {
             "type": "file",
-            "source": "resources/chef/recipes/azure",
+            "source": "resources/chef/recipes/gcp",
             "destination": "/tmp"
         },
         {
             "type": "shell",
             "inline": [
                 "yum localinstall -y /tmp/chef_client.rpm",
-                "chef-client -z /tmp/azure/init.rb --chef-license=accept",
-                "chef-client -z /tmp/azure/azure.rb --chef-license=accept"
+                "chef-client -z /tmp/gcp/gcp.rb --chef-license=accept"
             ]
         }
     ]
