@@ -21,7 +21,7 @@
             "skip_compaction": true,
             "differencing_disk": false,
             "output_directory": "builds/azure",
-            "vm_name": "CENTOS_7",
+            "vm_name": "CENTOS_7_azure",
             "boot_wait": "10s",
             "floppy_files": ["{{user `kickstart`}}"],
             "boot_command": [

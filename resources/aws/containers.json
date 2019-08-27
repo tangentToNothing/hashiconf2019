@@ -4,7 +4,7 @@
       "Format": "vhd",
       "UserBucket": {
           "S3Bucket": "privatevdhs",
-          "S3Key": "CENTOS_7.vhd"
+          "S3Key": "CENTOS_7_aws.vhd"
       }
   }
 ]
